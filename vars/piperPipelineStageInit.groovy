@@ -200,7 +200,7 @@ void call(Map parameters = [:]) {
         initStashConfiguration(script, config.stashSettings, config.customStashSettings, config.verbose ?: false)
 
         if (config.verbose) {
-            echo "piper-lib-os  configuration: ${script.commonPipelineEnvironment.configuration}"
+            echo "piper-lib-os-fork  configuration: ${script.commonPipelineEnvironment.configuration}"
         }
 
         piperInitRunStageConfiguration script: script, stageConfigResource: config.stageConfigResource

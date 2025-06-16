@@ -39,12 +39,14 @@ import groovy.transform.Field
 @Field Set PARAMETER_KEYS = STEP_CONFIG_KEYS
 
 void call(Map parameters = [:]) {
+    println "start"
     def script = checkScript(this, parameters) ?: this
     String stageName = parameters.stageName ?: env.STAGE_NAME
 
     script.commonPipelineEnvironment.configuration.runStage = [:]
     script.commonPipelineEnvironment.configuration.runStep = [:]
 
+    println "ConfigurationHelper"
     // load default & individual configuration
     Map config = ConfigurationHelper.newInstance(this)
         .loadStepDefaults([:], stageName)
@@ -55,11 +57,15 @@ void call(Map parameters = [:]) {
         .withMandatoryProperty('stageConfigResource')
         .use()
 
+    println "stageConfigResource"
     // Go logic to check if the step is active
     String piperGoPath = parameters?.piperGoPath ?: './piper'
     def resource = libraryResource(config.stageConfigResource)
+    println "resource: ${resource}"
     config.stages = (readYaml(text: resource)).spec.stages
+    println "config.stages"
     writeFile(file: ".pipeline/stage_conditions.yaml", text: resource)
+    println "checkIfStepActive"
     def success = piperExecuteBin.checkIfStepActive(parameters, script, piperGoPath, ".pipeline/stage_conditions.yaml", ".pipeline/step_out.json", ".pipeline/stage_out.json")
     if (!success) {
         throw new Exception("checkIfStepActive finished with error")

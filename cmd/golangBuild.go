@@ -344,11 +344,15 @@ func prepareGolangEnvironment(config *golangBuildOptions, goModFile *modfile.Fil
 }
 
 func runGolangTests(config *golangBuildOptions, utils golangBuildUtils) (bool, error) {
+	println "begin runGolangTests"
 	// execute gotestsum in order to have more output options
 	testOptions := []string{"--format standard-verbose", "--junitfile", golangUnitTestOutput, "--jsonfile", unitJsonReport, "--", fmt.Sprintf("-coverprofile=%v", coverageFile), "-tags=unit", "./..."}
+	println "testOptions ${testOptions}"
 	testOptions = append(testOptions, config.TestOptions...)
+	println "testOptions ${testOptions}"
 	if err := utils.RunExecutable("gotestsum", testOptions...); err != nil {
 		exists, fileErr := utils.FileExists(golangUnitTestOutput)
+		println "after RunExecutable"
 		if !exists || fileErr != nil {
 			log.SetErrorCategory(log.ErrorBuild)
 			return false, fmt.Errorf("running tests failed - junit result missing: %w", err)

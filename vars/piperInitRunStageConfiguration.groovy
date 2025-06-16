@@ -62,7 +62,7 @@ void call(Map parameters = [:]) {
     String piperGoPath = parameters?.piperGoPath ?: './piper'
     def resource = libraryResource(config.stageConfigResource)
     println "resource: ${resource}"
-    config.stages = (readYaml(text: resource)).spec.stages
+    config.stages = (readYaml(text: resource)).stages
     println "config.stages"
     writeFile(file: ".pipeline/stage_conditions.yaml", text: resource)
     println "checkIfStepActive"
